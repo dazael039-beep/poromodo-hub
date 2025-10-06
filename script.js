@@ -193,7 +193,7 @@ const timerManager = {
             const minutes = Math.floor(this.timeLeft / 60).toString().padStart(2, '0');
             const seconds = (this.timeLeft % 60).toString().padStart(2, '0');
             this.timerDisplay.textContent = `${minutes}:${seconds}`;
-            document.title = `${minutes}:${seconds} - Study Hub`;
+            document.title = `${minutes}:${seconds} - Poromodo Hub`;
         },
         toggleTimer() {
             ambientSoundManager.unlockAudio();
