@@ -209,7 +209,9 @@ const timerManager = {
             });
         },
         updateDisplay() {
-            const minutes = Math.floor(this.timeLeft / 60).toString().padStart(2, '0');
+            const minutes = Math.floor(this.timeLeft / 60)
+                .toString()
+                .padStart(2, '0');
             const seconds = (this.timeLeft % 60).toString().padStart(2, '0');
             this.timerDisplay.textContent = `${minutes}:${seconds}`;
             document.title = `${minutes}:${seconds} - Poromodo Hub`;
@@ -697,7 +699,9 @@ deleteCustomSound(soundId) {
             if (savedState) {
                 this.volumeSlider.value = savedState.volume || 0.5;
                 this.setVolume(this.volumeSlider.value);
-                if (savedState.activeSound) {}
+                if (savedState.activeSound) {
+                    this.toggleSound(savedState.activeSound, true);
+                }
             }
         },
 
@@ -705,7 +709,9 @@ deleteCustomSound(soundId) {
             if (this.isAudioUnlocked) return;
             const allSounds = document.querySelectorAll('audio');
             allSounds.forEach(sound => sound.muted = true);
-            allSounds.forEach(sound => sound.play().catch(e => {}));
+            allSounds.forEach(sound => {
+                sound.play().catch(e => {});
+            });
             setTimeout(() => allSounds.forEach(sound => sound.pause()), 10);
             allSounds.forEach(sound => sound.muted = false);
             this.isAudioUnlocked = true;
