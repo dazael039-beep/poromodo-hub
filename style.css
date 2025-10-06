@@ -119,6 +119,7 @@ h1, h2 {
     position: absolute;
     bottom: 70px;
     right: 0;
+    width: 280px;
     display: flex;
     flex-direction: column;    gap: 5px;
     background-color: var(--surface-color-light);
@@ -127,7 +128,6 @@ h1, h2 {
 }
 
 #about-panel-container {
-    width: 280px;
     right: 132px;
     text-align: center;
     padding: 20px;
@@ -144,10 +144,6 @@ h1, h2 {
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
-}
-
-#main-settings-container {
-    right: 0;
 }
 
 body.dark-mode .settings-container {
@@ -798,4 +794,33 @@ body.dark-mode #custom-confirm-box {
 .toast-notification.show {
     transform: translate(-50%, 0);
     opacity: 1;
+}
+
+@media (max-width: 700px) {
+    .container {
+        margin: 10px 10px 100px 10px; 
+    }
+    #timer-display {
+        font-size: 5.5rem;
+    }
+    .settings-popup-wrapper {
+        right: 50%;
+        transform: translateX(50%);
+    }
+    .stat-value {
+        font-size: 2.5rem;
+    }
+    .settings-container, .music-container, .about-container {
+        right: 50%;
+        transform: translateX(50%) translateY(20px);
+        width: calc(100vw - 40px);
+        max-width: 350px;
+        bottom: 65px; 
+    }
+    .settings-container.show, .music-container.show, .about-container.show {
+        transform: translateX(50%) translateY(0);
+    }
+    .focus-title-input {
+        width: 100%;
+    }
 }
