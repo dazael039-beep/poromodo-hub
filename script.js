@@ -742,7 +742,7 @@ const spotifyManager = {
             }
             try {
                 const urlObject = new URL(url);
-                const path = urlObject.pathname; // e.g., /track/12345
+                const path = urlObject.pathname;
                 const embedUrl = `https://open.spotify.com/embed${path}`;
 
                 this.embedContainer.innerHTML = `
