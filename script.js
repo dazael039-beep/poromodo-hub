@@ -7,6 +7,7 @@ settingsBtn: document.getElementById('settings-btn'),
 aboutBtn: document.getElementById('about-btn'),
 musicBtn: document.getElementById('music-btn'),
 resetBgBtn: document.getElementById('reset-bg-btn'),
+shareBtn: document.getElementById('share-btn'),
 fullscreenBtn: document.getElementById('fullscreen-btn'),
 aboutContainer: document.getElementById('about-panel-container'),
 settingsContainers: document.querySelectorAll('.settings-container'),
@@ -26,6 +27,7 @@ addEventListeners() {
     this.resetBgBtn.addEventListener('click', () => this.resetBackground());
     this.settingsBtn.addEventListener('click', () => this.toggleSettingsPanel());
     this.musicBtn.addEventListener('click', () => this.toggleMusicPanel());
+    this.shareBtn.addEventListener('click', () => this.copyLink());
     this.aboutBtn.addEventListener('click', () => this.toggleAboutPanel());
 
     document.querySelectorAll('.color-option').forEach(button => {
@@ -136,6 +138,14 @@ setThemeColor(selectedButton) {
                 this.settingsContainers.forEach(container => container.classList.remove('show'));
                 this.musicContainer.classList.remove('show');
             }
+        },
+        copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showToast('Failed to copy link.');
+            });
         },
         adjustColor(hex, percent) {
             let r = parseInt(hex.substring(1, 3), 16);
@@ -679,7 +689,6 @@ deleteCustomSound(soundId) {
                 this.volumeSlider.value = savedState.volume || 0.5;
                 this.setVolume(this.volumeSlider.value);
                 if (savedState.activeSound) {}
-            }
         },
 
         unlockAudio() {
@@ -707,7 +716,6 @@ const spotifyManager = {
             const pastedUrl = (event.clipboardData || window.clipboardData).getData('text');
             this.createPlayer(pastedUrl);
         },
-
         handleInputChange(event) {
             this.createPlayer(event.target.value);
         },
@@ -717,7 +725,7 @@ const spotifyManager = {
             }
             try {
                 const urlObject = new URL(url);
-                const path = urlObject.pathname; // e.g., /track/12345
+                const path = urlObject.pathname;
                 const embedUrl = `https://open.spotify.com/embed${path}`;
 
                 this.embedContainer.innerHTML = `
@@ -736,7 +744,6 @@ const spotifyManager = {
                 this.embedContainer.innerHTML = '';
             }
         },
-
         loadPlayer() {
             const savedUrl = localStorage.getItem('spotifyEmbedUrl');
             if (savedUrl) {

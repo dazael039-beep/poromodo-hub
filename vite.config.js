@@ -7,15 +7,7 @@ export default defineConfig(({ command }) => {
     return {
         plugins: [
             isBuild && javascriptObfuscator({
-                options: {
-                    compact: true,
-                    controlFlowFlattening: true,
-                    controlFlowFlatteningThreshold: 0.75,
-                    deadCodeInjection: true,
-                    deadCodeInjectionThreshold: 0.4,
-                    identifierNamesGenerator: 'mangled',
-                    transformObjectKeys: true,
-                },
+                options: { compact: true, controlFlowFlattening: true, controlFlowFlatteningThreshold: 0.75, deadCodeInjection: true, deadCodeInjectionThreshold: 0.4, identifierNamesGenerator: 'mangled', transformObjectKeys: true },
             }),
         ],
     };
