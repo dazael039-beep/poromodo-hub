@@ -689,6 +689,7 @@ deleteCustomSound(soundId) {
                 this.volumeSlider.value = savedState.volume || 0.5;
                 this.setVolume(this.volumeSlider.value);
                 if (savedState.activeSound) {}
+            }
         },
 
         unlockAudio() {
@@ -716,6 +717,7 @@ const spotifyManager = {
             const pastedUrl = (event.clipboardData || window.clipboardData).getData('text');
             this.createPlayer(pastedUrl);
         },
+
         handleInputChange(event) {
             this.createPlayer(event.target.value);
         },
@@ -725,7 +727,7 @@ const spotifyManager = {
             }
             try {
                 const urlObject = new URL(url);
-                const path = urlObject.pathname;
+                const path = urlObject.pathname; // e.g., /track/12345
                 const embedUrl = `https://open.spotify.com/embed${path}`;
 
                 this.embedContainer.innerHTML = `
@@ -744,6 +746,7 @@ const spotifyManager = {
                 this.embedContainer.innerHTML = '';
             }
         },
+
         loadPlayer() {
             const savedUrl = localStorage.getItem('spotifyEmbedUrl');
             if (savedUrl) {
