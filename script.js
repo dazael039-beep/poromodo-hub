@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || 
+      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+      (e.metaKey && e.altKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))) {
+      e.preventDefault();
+    }
+});
+
 const settingsManager = {
 body: document.body,
 themeToggle: document.getElementById('theme-toggle'),
