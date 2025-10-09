@@ -15,6 +15,7 @@ bgUpload: document.getElementById('bg-upload'),
 settingsBtn: document.getElementById('settings-btn'),
 aboutBtn: document.getElementById('about-btn'),
 musicBtn: document.getElementById('music-btn'),
+    openFeedbackBtn: document.getElementById('open-feedback-btn'),
 resetBgBtn: document.getElementById('reset-bg-btn'),
 shareBtn: document.getElementById('share-btn'),
 fullscreenBtn: document.getElementById('fullscreen-btn'),
@@ -38,6 +39,7 @@ addEventListeners() {
     this.musicBtn.addEventListener('click', () => this.toggleMusicPanel());
     this.shareBtn.addEventListener('click', () => this.copyLink());
     this.aboutBtn.addEventListener('click', () => this.toggleAboutPanel());
+    this.openFeedbackBtn.addEventListener('click', () => feedbackManager.showModal());
 
     document.querySelectorAll('.color-option').forEach(button => {
         button.addEventListener('click', (e) => this.setThemeColor(e.currentTarget));
@@ -173,11 +175,13 @@ setThemeColor(selectedButton) {
             document.addEventListener('click', (e) => {
                 const isClickInsidePanel = e.target.closest('.settings-container, .music-container, .about-container');
                 const isClickOnPopupButton = e.target.closest('.popup-btn');
+                const isClickInsideFeedback = e.target.closest('#feedback-modal');
 
-                if (!isClickInsidePanel && !isClickOnPopupButton) {
+                if (!isClickInsidePanel && !isClickOnPopupButton && !isClickInsideFeedback) {
                     this.settingsContainers.forEach(container => container.classList.remove('show'));
                     this.musicContainer.classList.remove('show');
                     this.aboutContainer.classList.remove('show');
+                    feedbackManager.hideModal();
                 }
             });
         }
@@ -772,6 +776,57 @@ const spotifyManager = {
         }
     };
 
+const feedbackManager = {
+    overlay: document.getElementById('feedback-overlay'),
+    form: document.getElementById('feedback-form'),
+    cancelBtn: document.getElementById('feedback-cancel-btn'),
+    submitBtn: document.getElementById('feedback-submit-btn'),
+
+    init() {
+        // IMPORTANT: Replace with your own EmailJS credentials
+        emailjs.init('VEqh0W-VT0kohN2KX');
+
+        this.addEventListeners();
+    },
+
+    addEventListeners() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.cancelBtn.addEventListener('click', () => this.hideModal());
+    },
+
+    showModal() {
+        this.overlay.classList.add('show');
+    },
+
+    hideModal() {
+        this.overlay.classList.remove('show');
+        this.form.reset();
+    },
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitBtn.textContent = 'Sending...';
+        this.submitBtn.disabled = true;
+
+        // IMPORTANT: Replace with your own Service ID and Template ID
+        const serviceID = 'service_dr2l5wc';
+        const templateID = 'template_crbqkru';
+
+        emailjs.sendForm(serviceID, templateID, this.form)
+            .then(() => {
+                this.submitBtn.textContent = 'Send';
+                this.submitBtn.disabled = false;
+                showToast('Feedback sent successfully! Thank you.');
+                this.hideModal();
+            }, (err) => {
+                this.submitBtn.textContent = 'Send';
+                this.submitBtn.disabled = false;
+                showToast('Failed to send feedback. Please try again.');
+                console.error('EmailJS Error:', JSON.stringify(err));
+            });
+    }
+};
+
 settingsManager.init();
 timerManager.init();
 taskManager.init();
@@ -780,4 +835,5 @@ handleWelcomeMessage();
 focusManager.init();
 ambientSoundManager.init();
 spotifyManager.init();
+feedbackManager.init();
 });

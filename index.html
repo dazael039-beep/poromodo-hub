@@ -69,6 +69,14 @@
             <p class="about-text">
                 This Pomodoro timer and task manager was created to help you stay focused and productive.
             </p>
+            <div class="whats-new-section">
+                <h3 class="whats-new-header">What's New</h3>
+                <ul class="whats-new-list">
+                    <li><span class="version-badge">v1.3</span>Added a secure feedback form inside settings.</li>
+                    <li><span class="version-badge">v1.2</span>Themed UI elements for better consistency.</li>
+                    <li><span class="version-badge">v1.1</span>Added custom sound uploads for ambient noise.</li>
+                </ul>
+            </div>
             <button id="share-btn" class="share-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                 <span>Share</span>
@@ -111,6 +119,14 @@
                     <input type="checkbox" id="theme-toggle">
                     <span class="slider"></span>
                 </label>
+            </div>
+            <div class="setting-item">
+                <span>Feedback</span>
+                <div class="setting-controls">
+                    <button id="open-feedback-btn" class="icon-btn" title="Send Feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card music-container" id="music-panel-container">
@@ -178,6 +194,23 @@
         </div>
     </div>
 
+    <div id="feedback-overlay" class="modal-overlay">
+        <div id="feedback-modal" class="card">
+            <h2>Send Feedback</h2>
+            <p>Have a suggestion or found a bug? Let me know!</p>
+            <form id="feedback-form">
+                <input type="text" name="from_name" class="feedback-input" placeholder="Your Name (Optional)">
+                <input type="email" name="reply_to" class="feedback-input" placeholder="Your Email (Optional, for replies)">
+                <textarea name="message" class="feedback-textarea" placeholder="Your message..." required></textarea>
+                <div class="feedback-actions">
+                    <button type="button" id="feedback-cancel-btn" class="btn-feedback btn-feedback-secondary">Cancel</button>
+                    <button type="submit" id="feedback-submit-btn" class="btn-feedback btn-feedback-primary">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module" src="/script.js"></script>
 </body>
 </html>
