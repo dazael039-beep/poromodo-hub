@@ -69,12 +69,23 @@
             <p class="about-text">
                 This Pomodoro timer and task manager was created to help you stay focused and productive.
             </p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/aedanne.keith.arcilla.2024" target="_blank" title="Facebook" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://www.instagram.com/kezxkin_" target="_blank" title="Instagram" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://www.tiktok.com/@_notkean" target="_blank" title="TikTok" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.917v4.034a9.948 9.948 0 0 1-5-1.951v4.5A6.5 6.5 0 1 1 8 8.43v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917z"></path></svg>
+                </a>
+            </div>
             <div class="whats-new-section">
                 <h3 class="whats-new-header">What's New</h3>
                 <ul class="whats-new-list">
-                    <li><span class="version-badge">v1.3</span>Added a secure feedback form inside settings.</li>
-                    <li><span class="version-badge">v1.2</span>Themed UI elements for better consistency.</li>
-                    <li><span class="version-badge">v1.1</span>Added custom sound uploads for ambient noise.</li>
+                    <li><span class="version-badge">v1.6</span>Added browser notifications for timer completion.</li>
+                    <li><span class="version-badge">v1.5</span>Added task completion history inside settings.</li>
+                    <li><span class="version-badge">v1.4</span>Added animated GIF backgrounds with presets and custom uploads.</li>
                 </ul>
             </div>
             <button id="share-btn" class="share-btn">
@@ -113,6 +124,33 @@
                     </button>
                 </div>
             </div>
+            <div class="setting-item">
+                <span>Animation</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="animation-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item gif-options-grid" id="gif-options-container">
+                <button class="gif-option-btn" data-gif-url="assets/coffeeshop.gif" title="Coffee Shop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" x2="6" y1="2" y2="8"></line><line x1="10" x2="10" y1="2" y2="8"></line><line x1="14" x2="14" y1="2" y2="8"></line></svg>
+                </button>
+                <button class="gif-option-btn" data-gif-url="/assets/rain5.gif" title="Rain">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 13.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path><path d="M12 3v1"></path><path d="M12 20v1"></path><path d="M3 12h1"></path><path d="M20 12h1"></path><path d="m18.36 5.64-.7.7"></path><path d="m6.34 17.66-.7.7"></path><path d="m18.36 17.66.7.7"></path><path d="m6.34 5.64.7.7"></path></svg>
+                </button>
+            </div>
+            <div class="setting-item" id="gif-url-container">
+                <span>Custom GIF</span>
+                <div class="setting-controls">
+                    <label for="gif-upload" class="icon-btn" title="Upload GIF">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </label>
+                    <input type="file" id="gif-upload" accept="image/gif" style="display: none;">
+                    <button id="reset-gif-btn" class="icon-btn" title="Reset GIF">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    </button>
+                </div>
+            </div>
             <div class="theme-switch-wrapper">
                 <span>Dark Mode</span>
                 <label class="theme-switch">
@@ -120,13 +158,27 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div class="theme-switch-wrapper">
+                <span>Notifications</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="notifications-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item-divider"></div>
             <div class="setting-item">
-                <span>Feedback</span>
+                <span>Task History</span>
                 <div class="setting-controls">
-                    <button id="open-feedback-btn" class="icon-btn" title="Send Feedback">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <button id="clear-history-btn" class="icon-btn" title="Clear History">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                    <button id="toggle-history-view-btn" class="icon-btn" title="Show History">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                 </div>
+            </div>
+            <div class="task-history-wrapper" id="task-history-wrapper">
+                <ul id="task-history-list"></ul>
             </div>
         </div>
         <div class="card music-container" id="music-panel-container">
@@ -139,9 +191,6 @@
                 </button>
                 <button class="ambient-btn" data-sound="ambient-coffee-shop" title="Coffee Shop">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" x2="6" y1="2" y2="8"></line><line x1="10" x2="10" y1="2" y2="8"></line><line x1="14" x2="14" y1="2" y2="8"></line></svg>
-                </button>
-                <button class="ambient-btn" data-sound="ambient-waves" title="Waves">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13.1a5 5 0 0 0 3.5-2.1L7 9l1.5 2a5 5 0 0 0 7 0l1.5-2 1.5 2.1a5 5 0 0 0 3.5 2.1"></path><path d="M2 18.1a5 5 0 0 0 3.5-2.1L7 14l1.5 2a5 5 0 0 0 7 0l1.5-2 1.5 2.1a5 5 0 0 0 3.5 2.1"></path><path d="M2 8.1a5 5 0 0 0 3.5-2.1L7 4l1.5 2a5 5 0 0 0 7 0l1.5-2 1.5 2.1a5 5 0 0 0 3.5 2.1"></path></svg>
                 </button>
             </div>
             <div class="setting-item ambient-section-header">
@@ -175,9 +224,6 @@
         <audio id="ambient-coffee-shop" loop preload="auto">
             <source src="/assets/coffee-shop.mp3" type="audio/mpeg">
         </audio>
-        <audio id="ambient-waves" loop preload="auto">
-            <source src="/assets/waves.mp3" type="audio/mpeg">
-        </audio>
     </div>
 
     <div id="custom-confirm-overlay" class="modal-overlay">
@@ -194,23 +240,6 @@
         </div>
     </div>
 
-    <div id="feedback-overlay" class="modal-overlay">
-        <div id="feedback-modal" class="card">
-            <h2>Send Feedback</h2>
-            <p>Have a suggestion or found a bug? Let me know!</p>
-            <form id="feedback-form">
-                <input type="text" name="from_name" class="feedback-input" placeholder="Your Name (Optional)">
-                <input type="email" name="reply_to" class="feedback-input" placeholder="Your Email (Optional, for replies)">
-                <textarea name="message" class="feedback-textarea" placeholder="Your message..." required></textarea>
-                <div class="feedback-actions">
-                    <button type="button" id="feedback-cancel-btn" class="btn-feedback btn-feedback-secondary">Cancel</button>
-                    <button type="submit" id="feedback-submit-btn" class="btn-feedback btn-feedback-primary">Send</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module" src="/script.js"></script>
 </body>
 </html>

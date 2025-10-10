@@ -1,27 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-    if (e.key === 'F12' || 
-      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
-      (e.metaKey && e.altKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))) {
-      e.preventDefault();
-    }
-});
-
 const settingsManager = {
 body: document.body,
 themeToggle: document.getElementById('theme-toggle'),
+animationToggle: document.getElementById('animation-toggle'),
+notificationsToggle: document.getElementById('notifications-toggle'),
 bgUpload: document.getElementById('bg-upload'),
 settingsBtn: document.getElementById('settings-btn'),
 aboutBtn: document.getElementById('about-btn'),
 musicBtn: document.getElementById('music-btn'),
-    openFeedbackBtn: document.getElementById('open-feedback-btn'),
 resetBgBtn: document.getElementById('reset-bg-btn'),
 shareBtn: document.getElementById('share-btn'),
 fullscreenBtn: document.getElementById('fullscreen-btn'),
 aboutContainer: document.getElementById('about-panel-container'),
 settingsContainers: document.querySelectorAll('.settings-container'),
 musicContainer: document.getElementById('music-panel-container'),
+toggleHistoryViewBtn: document.getElementById('toggle-history-view-btn'),
+taskHistoryWrapper: document.getElementById('task-history-wrapper'),
 
 init() {
     this.loadThemeColor();
@@ -32,6 +26,8 @@ init() {
 },
 addEventListeners() {
     this.themeToggle.addEventListener('change', () => this.toggleTheme());
+    this.animationToggle.addEventListener('change', () => animationManager.toggleAnimation());
+    this.notificationsToggle.addEventListener('change', () => this.handleNotificationToggle());
     this.bgUpload.addEventListener('change', (e) => this.handleBackgroundUpload(e));
     this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
     this.resetBgBtn.addEventListener('click', () => this.resetBackground());
@@ -39,11 +35,28 @@ addEventListeners() {
     this.musicBtn.addEventListener('click', () => this.toggleMusicPanel());
     this.shareBtn.addEventListener('click', () => this.copyLink());
     this.aboutBtn.addEventListener('click', () => this.toggleAboutPanel());
-    this.openFeedbackBtn.addEventListener('click', () => feedbackManager.showModal());
+    this.toggleHistoryViewBtn.addEventListener('click', () => this.toggleHistoryView());
 
     document.querySelectorAll('.color-option').forEach(button => {
         button.addEventListener('click', (e) => this.setThemeColor(e.currentTarget));
     });
+
+    this.loadNotificationSetting();
+},
+handleNotificationToggle() {
+    if (this.notificationsToggle.checked) {
+        if (Notification.permission === 'default') {
+            Notification.requestPermission().then(permission => {
+                this.notificationsToggle.checked = (permission === 'granted');
+                localStorage.setItem('notificationsEnabled', this.notificationsToggle.checked);
+            });
+        }
+    }
+    localStorage.setItem('notificationsEnabled', this.notificationsToggle.checked);
+},
+loadNotificationSetting() {
+    const enabled = localStorage.getItem('notificationsEnabled') === 'true';
+    this.notificationsToggle.checked = enabled && Notification.permission === 'granted';
 },
 setThemeColor(selectedButton) {
     const color = selectedButton.dataset.color;
@@ -150,6 +163,12 @@ setThemeColor(selectedButton) {
                 this.musicContainer.classList.remove('show');
             }
         },
+        toggleHistoryView() {
+            const wrapper = this.taskHistoryWrapper;
+            const icon = this.toggleHistoryViewBtn.querySelector('svg');
+            wrapper.style.maxHeight = wrapper.style.maxHeight ? null : `${wrapper.scrollHeight}px`;
+            icon.style.transform = wrapper.style.maxHeight ? 'rotate(180deg)' : 'rotate(0deg)';
+        },
         copyLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 showToast('Link copied to clipboard!');
@@ -175,13 +194,11 @@ setThemeColor(selectedButton) {
             document.addEventListener('click', (e) => {
                 const isClickInsidePanel = e.target.closest('.settings-container, .music-container, .about-container');
                 const isClickOnPopupButton = e.target.closest('.popup-btn');
-                const isClickInsideFeedback = e.target.closest('#feedback-modal');
 
-                if (!isClickInsidePanel && !isClickOnPopupButton && !isClickInsideFeedback) {
+                if (!isClickInsidePanel && !isClickOnPopupButton) {
                     this.settingsContainers.forEach(container => container.classList.remove('show'));
                     this.musicContainer.classList.remove('show');
                     this.aboutContainer.classList.remove('show');
-                    feedbackManager.hideModal();
                 }
             });
         }
@@ -248,12 +265,22 @@ const timerManager = {
             this.startBtn.textContent = 'Start';
             if (shouldNotify) {
                 this.notificationSound.play();
+                this.sendNotification();
                 if (this.currentMode === 'Pomodoro') {
                     analyticsManager.incrementSession();
                 }
-                if (confirm("Time's up! Take a break. Reset timer?")) {
-                    this.reset();
-                }
+                const message = this.currentMode === 'Pomodoro' ? "Time for a break!" : "Break's over! Time to focus.";
+                const confirmMessage = `${message}\n\nWould you like to start the next timer?`;
+                showConfirmationModal(confirmMessage, () => this.moveToNextMode());
+            }
+        },
+        sendNotification() {
+            const notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+            if (notificationsEnabled && Notification.permission === 'granted') {
+                const body = this.currentMode === 'Pomodoro' ? "Time for a break!" : "Time to focus!";
+                new Notification("Time's Up!", {
+                    body: body
+                });
             }
         },
         switchMode(button) {
@@ -262,6 +289,20 @@ const timerManager = {
             this.defaultTime = parseInt(button.dataset.time) * 60;
             this.currentMode = button.textContent;
             this.reset();
+        },
+        moveToNextMode() {
+            const currentModeIndex = Array.from(this.modeButtons).findIndex(btn => btn.classList.contains('active'));
+            let nextModeIndex;
+
+            if (this.currentMode === 'Pomodoro') {
+                // After Pomodoro, go to Short Break
+                nextModeIndex = 1;
+            } else {
+                // After any break, go back to Pomodoro
+                nextModeIndex = 0;
+            }
+            
+            this.modeButtons[nextModeIndex].click();
         }
     };
 
@@ -314,10 +355,14 @@ const taskManager = {
     taskInput: document.getElementById('task-input-field'),
     addTaskBtn: document.getElementById('add-task-btn'),
     taskList: document.getElementById('task-list'),
+    historyList: document.getElementById('task-history-list'),
+    clearHistoryBtn: document.getElementById('clear-history-btn'),
     tasks: [],
+    taskHistory: [],
 
         init() {
             this.loadTasks();
+            this.loadHistory();
             this.addEventListeners();
         },
         addEventListeners() {
@@ -325,10 +370,16 @@ const taskManager = {
             this.taskInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') this.handleAddTask();
             });
+            this.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
         },
         loadTasks() {
             this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
             this.tasks.forEach(task => this.createTaskElement(task));
+        },
+        loadHistory() {
+            this.taskHistory = JSON.parse(localStorage.getItem('taskHistory')) || [];
+            this.historyList.innerHTML = '';
+            this.taskHistory.forEach(task => this.createHistoryElement(task));
         },
         saveTasks() {
             localStorage.setItem('tasks', JSON.stringify(this.tasks));
@@ -387,15 +438,56 @@ const taskManager = {
             });
 
             li.querySelector('.delete-btn').addEventListener('click', () => {
-                const message = `Are you sure you want to delete this task?\n\n"${task.text}"`;
-                showConfirmationModal(message, () => {
+                if (task.completed) {
+                    this.archiveTask(task);
                     this.tasks = this.tasks.filter(t => t !== task);
                     this.saveTasks();
                     li.remove();
-                });
+                } else {
+                    // Permanently delete incomplete task
+                    const message = `Are you sure you want to delete this incomplete task?\n\n"${task.text}"`;
+                    showConfirmationModal(message, () => {
+                        this.tasks = this.tasks.filter(t => t !== task);
+                        this.saveTasks();
+                        li.remove();
+                    });
+                }
             });
 
             this.taskList.appendChild(li);
+        },
+        archiveTask(task) {
+            const completedTask = {
+                text: task.text,
+                completedAt: new Date().toISOString()
+            };
+            this.taskHistory.unshift(completedTask);
+            this.saveHistory();
+            this.createHistoryElement(completedTask, true);
+            showToast('Task moved to history.');
+        },
+        saveHistory() {
+            localStorage.setItem('taskHistory', JSON.stringify(this.taskHistory));
+        },
+        createHistoryElement(task, prepend = false) {
+            const li = document.createElement('li');
+            li.className = 'task-history-item';
+            const completionDate = new Date(task.completedAt).toLocaleDateString();
+            li.innerHTML = `<span>${task.text}</span> <span class="history-date">- ${completionDate}</span>`;
+            if (prepend) {
+                this.historyList.prepend(li);
+            } else {
+                this.historyList.appendChild(li);
+            }
+        },
+        clearHistory() {
+            const message = "Are you sure you want to clear the entire task history? This action cannot be undone.";
+            showConfirmationModal(message, () => {
+                this.taskHistory = [];
+                this.saveHistory();
+                this.historyList.innerHTML = '';
+                showToast('Task history cleared.');
+            });
         },
         handleAddTask() {
             const taskText = this.taskInput.value.trim();
@@ -776,54 +868,131 @@ const spotifyManager = {
         }
     };
 
-const feedbackManager = {
-    overlay: document.getElementById('feedback-overlay'),
-    form: document.getElementById('feedback-form'),
-    cancelBtn: document.getElementById('feedback-cancel-btn'),
-    submitBtn: document.getElementById('feedback-submit-btn'),
+const animationManager = {
+    isAnimationActive: false,
+    gifUrlContainer: document.getElementById('gif-url-container'),
+    gifOptionsContainer: document.getElementById('gif-options-container'),
+    gifOptionBtns: document.querySelectorAll('.gif-option-btn'),
+    gifUploadInput: document.getElementById('gif-upload'),
+    resetGifBtn: document.getElementById('reset-gif-btn'),
+    defaultGifUrl: "url('https://i.imgur.com/sT8s32L.gif')",
 
     init() {
-        // IMPORTANT: Replace with your own EmailJS credentials
-        emailjs.init('VEqh0W-VT0kohN2KX');
-
-        this.addEventListeners();
+        this.loadState();
+        this.gifOptionBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.handlePresetGifSelect(btn));
+        });
+        this.gifUploadInput.addEventListener('change', (e) => this.handleGifUpload(e));
+        this.resetGifBtn.addEventListener('click', () => this.resetGif());
     },
 
-    addEventListeners() {
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        this.cancelBtn.addEventListener('click', () => this.hideModal());
+    toggleAnimation() {
+        this.isAnimationActive = !this.isAnimationActive;
+        if (this.isAnimationActive) {
+            this.play();
+        } else {
+            this.pause();
+        }
+        this.saveState();
     },
 
-    showModal() {
-        this.overlay.classList.add('show');
+    play() {
+        const localGifData = localStorage.getItem('localGifData');
+        const remoteGifUrl = localStorage.getItem('gifUrl');
+
+        let gifUrl = this.defaultGifUrl;
+        if (localGifData) {
+            gifUrl = `url(${localGifData})`;
+        } else if (remoteGifUrl) {
+            gifUrl = remoteGifUrl;
+        }
+        document.documentElement.style.setProperty('--gif-url', gifUrl);
+        document.body.classList.add('gif-background-active');
+        settingsManager.animationToggle.checked = true;
+        this.isAnimationActive = true;
+        this.gifUrlContainer.style.display = 'flex';
+        this.gifOptionsContainer.style.display = 'grid';
     },
 
-    hideModal() {
-        this.overlay.classList.remove('show');
-        this.form.reset();
+    pause() {
+        document.body.classList.remove('gif-background-active');
+        settingsManager.animationToggle.checked = false;
+        this.isAnimationActive = false;
+        this.gifOptionsContainer.style.display = 'none';
+        this.gifUrlContainer.style.display = 'none';
     },
 
-    handleSubmit(event) {
-        event.preventDefault();
-        this.submitBtn.textContent = 'Sending...';
-        this.submitBtn.disabled = true;
+    handleGifUpload(event) {
+        const file = event.target.files[0];
+        if (!file || file.type !== 'image/gif') {
+            showToast('Please select a valid GIF file.');
+            return;
+        }
 
-        // IMPORTANT: Replace with your own Service ID and Template ID
-        const serviceID = 'service_dr2l5wc';
-        const templateID = 'template_crbqkru';
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            localStorage.setItem('localGifData', e.target.result);
+            localStorage.removeItem('gifUrl');
+            this.updateActiveButtonStates();
+            if (this.isAnimationActive) this.play();
+            showToast('GIF background updated!');
+        };
+        reader.readAsDataURL(file);
+    },
 
-        emailjs.sendForm(serviceID, templateID, this.form)
-            .then(() => {
-                this.submitBtn.textContent = 'Send';
-                this.submitBtn.disabled = false;
-                showToast('Feedback sent successfully! Thank you.');
-                this.hideModal();
-            }, (err) => {
-                this.submitBtn.textContent = 'Send';
-                this.submitBtn.disabled = false;
-                showToast('Failed to send feedback. Please try again.');
-                console.error('EmailJS Error:', JSON.stringify(err));
-            });
+    resetGif() {
+        localStorage.removeItem('localGifData');
+        const defaultUrl = `url('${this.gifOptionBtns[0].dataset.gifUrl}')`;
+        localStorage.setItem('gifUrl', defaultUrl);
+        this.gifUploadInput.value = ''; // Clear file input
+        this.updateActiveButtonStates();
+        this.loadState(); // Reload state to ensure consistency
+        if (this.isAnimationActive) this.play();
+        showToast('GIF background has been reset.');
+    },
+
+    handlePresetGifSelect(selectedBtn) {
+        const newUrl = selectedBtn.dataset.gifUrl;
+        
+        localStorage.removeItem('localGifData');
+        localStorage.setItem('gifUrl', `url('${newUrl}')`); 
+        this.gifUploadInput.value = ''; // Clear file input
+
+        this.updateActiveButtonStates();
+        if (this.isAnimationActive) this.play();
+    },
+
+    updateActiveButtonStates() {
+        this.gifOptionBtns.forEach(btn => btn.classList.remove('active'));
+
+        const remoteGifUrl = localStorage.getItem('gifUrl');
+        const localGifData = localStorage.getItem('localGifData');
+
+        if (localGifData) {
+            return;
+        }
+
+        if (remoteGifUrl) {
+            const activeBtn = document.querySelector(`.gif-option-btn[data-gif-url="${remoteGifUrl.replace(/url\(['"]?|['"]?\)/g, '')}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+    },
+
+    saveState() {
+        localStorage.setItem('animationActive', this.isAnimationActive);
+    },
+
+    loadState() {
+        const localGifData = localStorage.getItem('localGifData');
+
+        if (localStorage.getItem('animationActive') === 'true') {
+            this.play();
+        } else {
+            this.pause();
+        }
+        this.updateActiveButtonStates();
     }
 };
 
@@ -834,6 +1003,6 @@ analyticsManager.init();
 handleWelcomeMessage();
 focusManager.init();
 ambientSoundManager.init();
+animationManager.init();
 spotifyManager.init();
-feedbackManager.init();
 });
