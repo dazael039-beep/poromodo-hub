@@ -870,18 +870,13 @@ const spotifyManager = {
 
 const animationManager = {
     isAnimationActive: false,
-    gifUrlContainer: document.getElementById('gif-url-container'),
-    gifOptionsContainer: document.getElementById('gif-options-container'),
-    gifOptionBtns: document.querySelectorAll('.gif-option-btn'),
+    gifControls: document.getElementById('gif-controls'),
     gifUploadInput: document.getElementById('gif-upload'),
     resetGifBtn: document.getElementById('reset-gif-btn'),
-    defaultGifUrl: "url('https://i.imgur.com/sT8s32L.gif')",
+    defaultGifUrl: "", // No default GIF
 
     init() {
         this.loadState();
-        this.gifOptionBtns.forEach(btn => {
-            btn.addEventListener('click', () => this.handlePresetGifSelect(btn));
-        });
         this.gifUploadInput.addEventListener('change', (e) => this.handleGifUpload(e));
         this.resetGifBtn.addEventListener('click', () => this.resetGif());
     },
@@ -910,16 +905,12 @@ const animationManager = {
         document.body.classList.add('gif-background-active');
         settingsManager.animationToggle.checked = true;
         this.isAnimationActive = true;
-        this.gifUrlContainer.style.display = 'flex';
-        this.gifOptionsContainer.style.display = 'grid';
     },
 
     pause() {
         document.body.classList.remove('gif-background-active');
         settingsManager.animationToggle.checked = false;
         this.isAnimationActive = false;
-        this.gifOptionsContainer.style.display = 'none';
-        this.gifUrlContainer.style.display = 'none';
     },
 
     handleGifUpload(event) {
@@ -932,8 +923,6 @@ const animationManager = {
         const reader = new FileReader();
         reader.onload = (e) => {
             localStorage.setItem('localGifData', e.target.result);
-            localStorage.removeItem('gifUrl');
-            this.updateActiveButtonStates();
             if (this.isAnimationActive) this.play();
             showToast('GIF background updated!');
         };
@@ -942,42 +931,9 @@ const animationManager = {
 
     resetGif() {
         localStorage.removeItem('localGifData');
-        const defaultUrl = `url('${this.gifOptionBtns[0].dataset.gifUrl}')`;
-        localStorage.setItem('gifUrl', defaultUrl);
         this.gifUploadInput.value = ''; // Clear file input
-        this.updateActiveButtonStates();
-        this.loadState(); // Reload state to ensure consistency
         if (this.isAnimationActive) this.play();
         showToast('GIF background has been reset.');
-    },
-
-    handlePresetGifSelect(selectedBtn) {
-        const newUrl = selectedBtn.dataset.gifUrl;
-        
-        localStorage.removeItem('localGifData');
-        localStorage.setItem('gifUrl', `url('${newUrl}')`); 
-        this.gifUploadInput.value = ''; // Clear file input
-
-        this.updateActiveButtonStates();
-        if (this.isAnimationActive) this.play();
-    },
-
-    updateActiveButtonStates() {
-        this.gifOptionBtns.forEach(btn => btn.classList.remove('active'));
-
-        const remoteGifUrl = localStorage.getItem('gifUrl');
-        const localGifData = localStorage.getItem('localGifData');
-
-        if (localGifData) {
-            return;
-        }
-
-        if (remoteGifUrl) {
-            const activeBtn = document.querySelector(`.gif-option-btn[data-gif-url="${remoteGifUrl.replace(/url\(['"]?|['"]?\)/g, '')}"]`);
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-            }
-        }
     },
 
     saveState() {
@@ -985,14 +941,11 @@ const animationManager = {
     },
 
     loadState() {
-        const localGifData = localStorage.getItem('localGifData');
-
         if (localStorage.getItem('animationActive') === 'true') {
             this.play();
         } else {
             this.pause();
         }
-        this.updateActiveButtonStates();
     }
 };
 
