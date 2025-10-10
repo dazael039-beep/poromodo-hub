@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
  <div id="welcome-overlay">
@@ -83,10 +83,9 @@
             <div class="whats-new-section">
                 <h3 class="whats-new-header">What's New</h3>
                 <ul class="whats-new-list">
+                    <li><span class="version-badge">v1.6</span>Added browser notifications for timer completion.</li>
                     <li><span class="version-badge">v1.5</span>Added task completion history inside settings.</li>
-                    <li><span class="version-badge">v1.4</span>Added animated GIF backgrounds with custom uploads.</li>
-                    <li><span class="version-badge">v1.3</span>Enabled browser notifications for when the timer completes.</li>
-                    <li><span class="version-badge">v1.2</span>Added an 'About Me' section with social media links.</li>
+                    <li><span class="version-badge">v1.4</span>Added animated GIF backgrounds with presets and custom uploads.</li>
                 </ul>
             </div>
             <button id="share-btn" class="share-btn">
@@ -205,11 +204,11 @@
             <div id="spotify-embed-container"></div>
         </div>
     </div>
-    <audio id="notification-sound" src="assets/notification.mp3" preload="auto"></audio>
+    <audio id="notification-sound" preload="auto"></audio>
 
     <div id="ambient-audio-container">
-        <audio id="ambient-rain" src="assets/rain.mp3" loop preload="auto"></audio>
-        <audio id="ambient-coffee-shop" src="assets/coffee-shop.mp3" loop preload="auto"></audio>
+        <audio id="ambient-rain" loop preload="auto"></audio>
+        <audio id="ambient-coffee-shop" loop preload="auto"></audio>
     </div>
 
     <div id="custom-confirm-overlay" class="modal-overlay">
@@ -226,6 +225,6 @@
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="/script.js"></script>
 </body>
 </html>
