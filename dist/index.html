@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-9EG85nMp.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BrXx59eP.css">
+</head>
+<body>
+ <div id="welcome-overlay">
+        <h1>Welcome to Pomodoro!</h1>
+    </div>
+    <div class="container">
+        <div class="card timer-container">
+            <h2 id="main-focus-title" title="Click to edit your focus">Set Your Focus</h2>
+            <div class="timer-modes">
+                <button class="mode-btn active" data-time="25">Pomodoro</button>
+                <button class="mode-btn" data-time="5">Short Break</button>
+                <button class="mode-btn" data-time="15">Long Break</button>
+            </div>
+            <div id="timer-display">25:00</div>
+            <div class="timer-controls">
+                <button id="start-btn">Start</button>
+                <button id="reset-btn" title="Reset Timer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div class="card tasks-container">
+            <h2>My Tasks</h2>
+            <div class="task-input">
+                <input type="text" id="task-input-field" placeholder="Add a new task...">
+                <button id="add-task-btn">Add</button>
+            </div>
+            <ul id="task-list"></ul>
+        </div>
+        <div class="card analytics-container">
+            <h2>Session Analytics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" id="today-sessions">0</span>
+                    <span class="stat-label">Today's Sessions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="total-sessions">0</span>
+                    <span class="stat-label">Total Sessions</span>
+                </div>
+            </div>
+            <button id="reset-stats-btn" title="Reset all session data">Reset Stats</button>
+        </div>
+    </div>
+    <div class="settings-popup-wrapper">
+        <div class="popup-buttons">
+            <button id="about-btn" class="popup-btn" title="About">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </button>
+            <button id="music-btn" class="popup-btn" title="Music">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            </button>
+            <button id="settings-btn" class="popup-btn" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <div class="card about-container" id="about-panel-container">
+            <h2 class="about-header">About</h2>
+            <p class="about-text">
+                This Pomodoro timer and task manager was created to help you stay focused and productive.
+            </p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/aedanne.keith.arcilla.2024" target="_blank" title="Facebook" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://www.instagram.com/kezxkin_" target="_blank" title="Instagram" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://www.tiktok.com/@_notkean" target="_blank" title="TikTok" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.917v4.034a9.948 9.948 0 0 1-5-1.951v4.5A6.5 6.5 0 1 1 8 8.43v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917z"></path></svg>
+                </a>
+            </div>
+            <div class="whats-new-section">
+                <h3 class="whats-new-header">What's New</h3>
+                <ul class="whats-new-list">
+                    <li><span class="version-badge">v1.6</span>Added browser notifications for timer completion.</li>
+                    <li><span class="version-badge">v1.5</span>Added task completion history inside settings.</li>
+                    <li><span class="version-badge">v1.4</span>Added animated GIF backgrounds with presets and custom uploads.</li>
+                </ul>
+            </div>
+            <button id="share-btn" class="share-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span>Share</span>
+            </button>
+        </div>
+        <div class="card settings-container" id="main-settings-container">
+            <div class="setting-item">
+                <span>Background</span>
+                <div class="setting-controls">
+                    <label for="bg-upload" class="icon-btn" title="Change Background">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    </label>
+                    <input type="file" id="bg-upload" accept="image/*" style="display: none;">
+                    <button id="reset-bg-btn" class="icon-btn" title="Reset Background">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span>Theme Color</span>
+                <div class="theme-color-options">
+                    <button class="color-option" data-color="#c0b9dd" style="background-color: #c0b9dd;" title="Muted Lilac"></button>
+                    <button class="color-option" data-color="#a3b899" style="background-color: #a3b899;" title="Sage Green"></button>
+                    <button class="color-option" data-color="#a8d8ea" style="background-color: #a8d8ea;" title="Powder Blue"></button>
+                    <button class="color-option" data-color="#d1a3a4" style="background-color: #d1a3a4;" title="Dusty Rose"></button>
+                    <button class="color-option" data-color="#e3d5c4" style="background-color: #e3d5c4;" title="Warm Sand"></button>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span>Fullscreen</span>
+                <div class="setting-controls">
+                    <button id="fullscreen-btn" class="icon-btn" title="Toggle Fullscreen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span>Animation</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="animation-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item gif-options-grid" id="gif-options-container">
+                <button class="gif-option-btn" data-gif-url="assets/coffee-shop.gif" title="Coffee Shop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" x2="6" y1="2" y2="8"></line><line x1="10" x2="10" y1="2" y2="8"></line><line x1="14" x2="14" y1="2" y2="8"></line></svg>
+                </button>
+                <button class="gif-option-btn" data-gif-url="assets/rain-one.gif" title="Rain">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 13.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path><path d="M12 3v1"></path><path d="M12 20v1"></path><path d="M3 12h1"></path><path d="M20 12h1"></path><path d="m18.36 5.64-.7.7"></path><path d="m6.34 17.66-.7.7"></path><path d="m18.36 17.66.7.7"></path><path d="m6.34 5.64.7.7"></path></svg>
+                </button>
+            </div>
+            <div class="setting-item" id="gif-url-container">
+                <span>Background Animation</span>
+                <div class="setting-controls">
+                    <label for="gif-upload" class="icon-btn" title="Upload GIF">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </label>
+                    <input type="file" id="gif-upload" accept="image/gif" style="display: none;">
+                    <button id="reset-gif-btn" class="icon-btn" title="Reset GIF">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="theme-switch-wrapper">
+                <span>Dark Mode</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="theme-switch-wrapper">
+                <span>Notifications</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="notifications-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item-divider"></div>
+            <div class="setting-item">
+                <span>Task History</span>
+                <div class="setting-controls">
+                    <button id="clear-history-btn" class="icon-btn" title="Clear History">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                    <button id="toggle-history-view-btn" class="icon-btn" title="Show History">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="task-history-wrapper" id="task-history-wrapper">
+                <ul id="task-history-list"></ul>
+            </div>
+        </div>
+        <div class="card music-container" id="music-panel-container">
+            <div class="setting-item ambient-section-header">
+                <span>Ambient Sounds</span>
+            </div>
+            <div class="setting-item ambient-sounds-grid">
+                <button class="ambient-btn" data-sound="ambient-rain" title="Rain">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 13.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path><path d="M12 3v1"></path><path d="M12 20v1"></path><path d="M3 12h1"></path><path d="M20 12h1"></path><path d="m18.36 5.64-.7.7"></path><path d="m6.34 17.66-.7.7"></path><path d="m18.36 17.66.7.7"></path><path d="m6.34 5.64.7.7"></path></svg>
+                </button>
+                <button class="ambient-btn" data-sound="ambient-coffee-shop" title="Coffee Shop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" x2="6" y1="2" y2="8"></line><line x1="10" x2="10" y1="2" y2="8"></line><line x1="14" x2="14" y1="2" y2="8"></line></svg>
+                </button>
+            </div>
+            <div class="setting-item ambient-section-header">
+                <span>Custom Sounds</span>
+                <label for="sound-upload" class="icon-btn" title="Add Custom Sound">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </label>
+                <input type="file" id="sound-upload" accept="audio/*" style="display: none;">
+            </div>
+            <div id="custom-sounds-list"></div>
+            <div class="setting-item">
+                <input type="range" id="ambient-volume-slider" class="volume-slider" min="0" max="1" step="0.05" title="Ambient Volume">
+            </div>
+            <div class="setting-item ambient-section-header">
+                <span>Spotify Player</span>
+            </div>
+            <div class="setting-item">
+                <input type="text" id="spotify-link-input" placeholder="Paste Spotify link here...">
+            </div>
+            <div id="spotify-embed-container"></div>
+        </div>
+    </div>
+    <audio id="notification-sound" preload="auto"></audio>
+
+    <div id="ambient-audio-container">
+        <audio id="ambient-rain" loop preload="auto"></audio>
+        <audio id="ambient-coffee-shop" loop preload="auto"></audio>
+    </div>
+
+    <div id="custom-confirm-overlay" class="modal-overlay">
+        <div id="custom-confirm-box" class="card">
+            <p id="custom-confirm-msg">Are you sure?</p>
+            <div class="custom-confirm-actions">
+                <button id="custom-confirm-cancel" class="modal-icon-btn btn-secondary" title="Cancel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <button id="custom-confirm-ok" class="modal-icon-btn btn-danger" title="Confirm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
